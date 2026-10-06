@@ -1,0 +1,193 @@
+# --- CONFIGURAZIONE COMPLETA I3 ---
+
+# 1. TASTO MODIFICATORE (Win Key)
+set $mod Mod4
+
+# 2. FONT E STILE
+font pango:JetBrainsMono Nerd Font 10
+
+# 3. GAPS (SPAZI TRA LE FINESTRE)
+gaps inner 0
+gaps outer 0
+smart_gaps off
+# Rimuovi i bordi doppi e brutti
+for_window [class="^.*"] border pixel 1
+default_border pixel 1
+
+# --- Colori i3 (barra delle tab / bordi) in tema scuro ---
+client.focused          #282A2E #282A2E #C5C8C6 #8ABEB7 #282A2E
+client.focused_inactive #282A2E #282A2E #C5C8C6 #282A2E #282A2E
+client.unfocused        #282A2E #282A2E #707880 #282A2E #282A2E
+client.urgent           #A54242 #A54242 #FFFFFF #A54242 #A54242
+client.background       #282A2E
+
+# 4. MONITOR E COMPOSITOR (Trasparenze e Sfondo)
+# Nessun compositor (picom rimosso su richiesta)
+
+# Imposta lo sfondo (assicurati di avere l'immagine!)
+exec_always --no-startup-id feh --bg-fill /home/giancarlo/Pictures/Wallpapers/moraine-lake.jpg
+
+exec_always --no-startup-id ~/.config/i3/lid-monitor.sh
+
+# Re-apply the display layout when a monitor is plugged/unplugged
+exec --no-startup-id ~/.config/i3/monitor-watch.sh
+
+exec --no-startup-id nm-applet
+
+exec --no-startup-id blueman-applet
+
+
+# 5. AVVIO AUTOMATICO SERVIZI
+# Polkit (per chiedere password grafiche)
+exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+# Wi-Fi Applet (icona in alto a destra)
+exec --no-startup-id nm-applet
+# Bluetooth Applet (icona in alto a destra)
+exec --no-startup-id blueman-applet
+# Screensaver (opzionale)
+# Blocca lo schermo dopo 5 minuti di inattività e prima di sospendere
+exec --no-startup-id xset s 300 300
+exec --no-startup-id xss-lock --transfer-sleep-lock -- /home/giancarlo/.config/i3/lock.sh
+# Notification daemon (GNOME was removed, so notifications had no daemon)
+exec --no-startup-id dunst
+
+# 6. AVVIO BARRA (POLYBAR)
+# Lancia lo script che abbiamo creato prima
+exec_always --no-startup-id ~/.config/polybar/launch.sh
+
+
+
+# --- DEFINIZIONE WORKSPACE ---
+set $ws1 "1:  dev"
+set $ws2 "2:  firefox"
+set $ws3 "3:  gmail"
+set $ws4 "4:  spotify"
+set $ws5 "5"
+set $ws6 "6"
+set $ws7 "7"
+set $ws8 "8"
+set $ws9 "9"
+set $ws10 "10"
+
+# --- ASSEGNAZIONE APP AI WORKSPACE ---
+#TODO: Le app si aprono automaticamente nel posto giusto
+# assign [class="Thunderbird"] $ws3
+
+# --- TASTI RAPIDI (KEYBINDINGS) ---
+
+# Terminale (alacritty)
+bindsym $mod+Return exec alacritty
+
+# Menu Applicazioni (Rofi invece di dmenu)
+bindsym $mod+d exec --no-startup-id rofi -show drun -show-icons
+
+# Browser (Firefox)
+bindsym $mod+b exec firefox
+
+# File Manager (Thunar)
+bindsym $mod+e exec thunar
+
+# Chiudi finestra (Kill)
+bindsym $mod+Shift+q kill
+
+# --- GESTIONE AUDIO E MEDIA (Usa pamixer) ---
+# Volume Su
+bindsym XF86AudioRaiseVolume exec --no-startup-id pamixer -i 5
+# Volume Giù
+bindsym XF86AudioLowerVolume exec --no-startup-id pamixer -d 5
+# Muto
+bindsym XF86AudioMute exec --no-startup-id pamixer -t
+# Muto microfono (tasto dedicato, keycode 198)
+bindsym XF86AudioMicMute exec --no-startup-id pamixer --default-source -t
+# Play/Pause (se hai i tasti media)
+bindsym XF86AudioPlay exec playerctl play-pause
+bindsym XF86AudioNext exec playerctl next
+bindsym XF86AudioPrev exec playerctl previous
+
+# --- LUMINOSITÀ SCHERMO (brightnessctl) ---
+# Alza/abbassa del 5% (tasti Fn, keycode 233/232)
+bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set 5%+
+bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 5%-
+# Tasto "ciclo luminosità" (presente sulla tastiera, keycode 251)
+bindsym XF86MonBrightnessCycle exec --no-startup-id brightnessctl set +5%
+
+# --- SCREENSHOT (Flameshot) ---
+bindsym $mod+s exec --no-startup-id /home/giancarlo/.config/i3/screenshot.sh region
+# Tasto "Stamp" (Print Screen): seleziona un'area, salva e copia negli appunti
+bindsym Print exec --no-startup-id /home/giancarlo/.config/i3/screenshot.sh region
+# Shift+Stamp: schermo intero
+bindsym Shift+Print exec --no-startup-id /home/giancarlo/.config/i3/screenshot.sh full
+
+# --- NAVIGAZIONE FINESTRE ---
+# Focus con le frecce
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+# Sposta le finestre
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+# --- GESTIONE WORKSPACE ---
+# Vai al workspace
+bindsym $mod+1 workspace number $ws1
+bindsym $mod+2 workspace number $ws2
+bindsym $mod+3 workspace number $ws3
+bindsym $mod+4 workspace number $ws4
+bindsym $mod+5 workspace number $ws5
+bindsym $mod+6 workspace number $ws6
+bindsym $mod+7 workspace number $ws7
+bindsym $mod+8 workspace number $ws8
+bindsym $mod+9 workspace number $ws9
+bindsym $mod+0 workspace number $ws10
+
+# Sposta finestra al workspace
+bindsym $mod+Shift+1 move container to workspace number $ws1
+bindsym $mod+Shift+2 move container to workspace number $ws2
+bindsym $mod+Shift+3 move container to workspace number $ws3
+bindsym $mod+Shift+4 move container to workspace number $ws4
+bindsym $mod+Shift+5 move container to workspace number $ws5
+bindsym $mod+Shift+6 move container to workspace number $ws6
+bindsym $mod+Shift+7 move container to workspace number $ws7
+bindsym $mod+Shift+8 move container to workspace number $ws8
+bindsym $mod+Shift+9 move container to workspace number $ws9
+bindsym $mod+Shift+0 move container to workspace number $ws10
+
+# --- LAYOUT E UTILITY ---
+# Fullscreen
+bindsym $mod+f fullscreen toggle
+# Fullscreen anche con Ctrl+F (nota: cattura Ctrl+F, quindi "Trova" nel browser non funziona)
+bindsym ctrl+f fullscreen toggle
+
+# Split orizzontale/verticale
+bindsym $mod+h split h
+bindsym $mod+v split v
+
+# Modalità layout (stacking, tabbed, split)
+bindsym $mod+m layout stacking
+bindsym $mod+w layout tabbed
+
+# Ricarica Configurazione (senza logout)
+bindsym $mod+Shift+c reload
+bindsym $mod+Shift+r restart
+
+# Esci da i3
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Vuoi uscire?' -B 'Sì, esci' 'i3-msg exit'"
+
+# Modalità Resize (per ridimensionare le finestre)
+mode "resize" {
+        bindsym Left resize shrink width 10 px or 10 ppt
+        bindsym Down resize grow height 10 px or 10 ppt
+        bindsym Up resize shrink height 10 px or 10 ppt
+        bindsym Right resize grow width 10 px or 10 ppt
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+        bindsym $mod+r mode "default"
+}
+bindsym $mod+r mode "resize"
+
+# Gestione automatica monitor (carica il profilo salvato se il cavo è attaccato)
+exec_always --no-startup-id autorandr --change
